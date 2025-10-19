@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="google-site-verification" content="Dz2U6pD2F6-3pEOIGD77TL56lMqlLri6JSLeDj8MuLM" />
+<title>Blens Cool Quiz- quiz about, math, reading, and science for kids!</title>
+    <style>
+        body {
+            background-color:lightblue;
+        }
+        h1,h3 {
+            text-align: center;
+            color:rgb(54, 51, 54);
+        }
+       button {
+  border-radius:22%;
+  background-color: #007bff; 
+  color: white; 
+  border: none;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+#result {
+    background-color:white;
+    border-radius:9%;
+}
+#password-section {
+    display:none;
+}
+#feedback-list {
+    display:none;
+}
+    </style>
+</head>
+<body>
+    <h1>Blens Cool Quiz</h1>
+<div id="quiz-section">
+    <h3>Question 1: What is 2 x 3?</h3>
+    <button>5</button><br>
+    <button>7</button><br>
+    <button data-correct="true">6</button><br>
+    <button>4</button><br>
+
+    <h3>Question 2: What is a Main Idea?</h3>
+    <button>It is a detail from the story</button><br>
+    <button data-correct="true">It is what the story is about</button><br>
+    <button>It is the text under a picture</button><br>
+    <button>It is the summary of a story</button><br>
+
+    <h3>Question 3: How many layers does the Earth have?</h3>
+    <button data-correct="true">4: The crust, mantle, outer core, and inner core</button><br>
+    <button>3: The crust, mantle, and inner core</button><br>
+    <button>4: The crust, mantle, and lava</button><br>
+    <button>1: The Earth</button><br>
+<h3>Question 4: What do you think of this quiz?</h3>
+
+<input type="text" id="feedback-inp"><button id="submit-feedback">submit</button>
+    <h3>Correct answers:</h3>
+    <div id="result">Correct: 0, Wrong: 0</div>
+<button id="show-feedback-btn">Feedback</button>
+<div id="password-section">
+    <input id="input"><button id="password-submit">submit</button>
+</div>
+</div>
+<div id="feedback-list"></div>
+    <script>
+        // Feedback array
+        var feedbackList = [];
+        var savedFeedback = localStorage.getItem("feedback");
+        if (savedFeedback) {
+            feedbackList = JSON.parse(savedFeedback);
+        }
+
+        var correctCount = 0;
+        var wrongCount = 0;
+
+        // Quiz buttons — exclude feedback and show-feedback buttons
+        var buttonEls = document.querySelectorAll("#quiz-section button:not(#submit-feedback):not(#show-feedback-btn)");
+        buttonEls.forEach(function(button) {
+            button.addEventListener("click", function() {
+                if (this.getAttribute("data-correct") === "true") {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+                document.getElementById("result").innerHTML = "Correct: " + correctCount + ", Wrong: " + wrongCount;
+            });
+        });
+
+        // Show password section
+        var feedbut = document.getElementById("show-feedback-btn");
+        var passwordSection = document.getElementById("password-section");
+        feedbut.addEventListener("click", function() {
+            passwordSection.style.display = "block";
+        });
+
+        // Password submit
+        var passwordSubmit = document.getElementById("password-submit");
+        passwordSubmit.addEventListener("click", function() {
+            var enteredPassword = document.getElementById("input").value;
+            if(enteredPassword === "bm.052016") {
+                document.getElementById("quiz-section").style.display = "none";
+                document.getElementById("feedback-list").style.display = "block";
+
+                // Reload all feedback from localStorage to ensure everything is shown
+                var allSavedFeedback = localStorage.getItem("feedback");
+                if(allSavedFeedback) {
+                    feedbackList = JSON.parse(allSavedFeedback);
+                }
+                showFeedback();
+            } else {
+                alert("Wrong password!");
+            }
+        });
+
+        // Feedback submit button
+        var feedbackSubmit = document.getElementById("submit-feedback");
+        feedbackSubmit.addEventListener("click", function() {
+            var fb = document.getElementById("feedback-inp").value.trim();
+            if(fb) {
+                feedbackList.push(fb); // add to array
+                localStorage.setItem("feedback", JSON.stringify(feedbackList)); // save array
+                document.getElementById("feedback-inp").value = "";
+                // Only show feedback if password has been entered
+                if(document.getElementById("feedback-list").style.display === "block") {
+                    showFeedback();
+                }
+            }
+        });
+
+        function showFeedback() {
+            var feedbackDiv = document.getElementById("feedback-list");
+            feedbackDiv.innerHTML = "";
+            for (var i = 0; i < feedbackList.length; i++) {
+                feedbackDiv.innerHTML += "<div>" + feedbackList[i] + "</div>";
+            }
+        }
+    </script>
+</body>
+</html>
